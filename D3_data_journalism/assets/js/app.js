@@ -48,26 +48,43 @@ d3.csv("./assets/data/data.csv").then(function(censusData) {
     chartGroup.append("g")
         .call(leftAxis);
 
-    // Line generators for line
-    // const marker = d3.circle()
-    //     .cx(d => xAgeScale(d.age))
-    //     .cy(d => yLinearScale(d.poverty));
-
     // Append a path for line1
+    const circleRad = 15;
+
     chartGroup.selectAll("circle")
         .data(censusData)
         .enter()
         .append("circle")
         .attr("cx", d => xAgeScale(d.age))
         .attr("cy", d => yLinearScale(d.poverty))
-        .attr("r", "5")
+        .attr("r", circleRad)
+        //.text("hi")
         .classed("stateCircle", true);
     
+    //Append text to circles
+    chartGroup.selectAll(".stateText")
+        .data(censusData)
+        .enter()
+        .append("text")
+        .attr("x", d => xAgeScale(d.age))
+        .attr("y", d => yLinearScale(d.poverty) + circleRad/2)
+        .attr("value", d => d.abbr)
+        .text(d => d.abbr)
+        .classed("stateText", true);
+
     // Append axes titles
     chartGroup.append("text")
         .attr("transform", `translate(${width / 2}, ${height + margin.top + 20})`)
         .classed("aText", true)
         .text("Age");
+    
+    chartGroup.append("text")
+        .attr("transform", `rotate(-90)`)
+        .attr("y", 0 - margin.left + 40)
+        .attr("x", 0 - (height / 2))
+        .attr("dy", "-1.5em")
+        .classed("aText", true)
+        .text("In Poverty (%)");
 
 }).catch(function(error){
     console.log(error);
